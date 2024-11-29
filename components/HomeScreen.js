@@ -1,39 +1,53 @@
 import React, { useState } from "react";
-import { View, Text, Button, StyleSheet, Alert } from "react-native";
+import { View, Button, StyleSheet, TouchableOpacity, Text } from "react-native";
 import SignUpScreen from "./SignUP";
+import GetApiPage from "./GetApiPage";
+
 const App = () => {
   const [showSignup, setShowSignup] = useState(false); // State to control showing sign-up screen
-
-  // Function to simulate API GET request
-  const handleGetAPI = async () => {
-    try {
-      // Simulate API call (replace with your API endpoint)
-      const response = await fetch("https://jsonplaceholder.typicode.com/posts/1");
-      const data = await response.json();
-      Alert.alert("API Response", JSON.stringify(data)); // Show API data in an alert
-    } catch (error) {
-      Alert.alert("Error", "Failed to fetch data");
-    }
-  };
+  const [showComponent, setShowComponent] = useState(false); // State to control showing GetApiPage
 
   // Function to show sign-up screen
   const handleSignup = () => {
     setShowSignup(true);
   };
 
+  // Function to show GetApiPage
+  const handleShowComponent = () => {
+    setShowComponent(true);
+  };
+
+  // Function to go back from GetApiPage
+  const handleGoBack = () => {
+    setShowSignup(false);
+    setShowComponent(false);
+  };
+
   return (
     <View style={styles.container}>
-      {!showSignup ? (
-        <View>
-          <Button title="Signup" onPress={handleSignup} color="#6200EE" />
-          <View style={{ marginTop: 20 }}>
-            <Button title="Get Data" onPress={handleGetAPI} color="#03DAC6" />
-          </View>
+      {!showSignup && !showComponent ? (
+        <View style={styles.buttonContainer}>
+          <TouchableOpacity style={styles.primaryButton} onPress={handleSignup}>
+            <Text style={styles.buttonText}>Sign Up</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity style={styles.secondaryButton} onPress={handleShowComponent}>
+            <Text style={styles.buttonText}>Get User</Text>
+          </TouchableOpacity>
+        </View>
+      ) : showSignup ? (
+        <View style={styles.screenContainer}>
+          <SignUpScreen />
+          <TouchableOpacity style={styles.backButton} onPress={handleGoBack}>
+            <Text style={styles.backButtonText}>Go Back</Text>
+          </TouchableOpacity>
         </View>
       ) : (
-        <View style={styles.signupScreen}>
-            <SignUpScreen/>
-          <Button title="Go Back" onPress={() => setShowSignup(false)} color="#FF0266" />
+        <View style={styles.screenContainer}>
+          <GetApiPage />
+          <TouchableOpacity style={styles.backButton} onPress={handleGoBack}>
+            <Text style={styles.backButtonText}>Go Back</Text>
+          </TouchableOpacity>
         </View>
       )}
     </View>
@@ -42,25 +56,61 @@ const App = () => {
 
 const styles = StyleSheet.create({
   container: {
-    flex: 2,
+    flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#F5F5F5",
-    width: '100%',
-
+    backgroundColor: "#f0f0f0",
+    paddingHorizontal: 20,
   },
-//   signupScreen: {
-//     alignItems: "center",
-//   },
-  signupText: {
-    width: '100%',
-    length:"100%",
-    fontSize: 18,
+  buttonContainer: {
+    width: "100%",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  primaryButton: {
+    width: "80%",
+    paddingVertical: 15,
+    backgroundColor: "#6200EE",
+    borderRadius: 8,
     marginBottom: 20,
-    fontWeight: "bold",
-    color: "#6200EE",
+    alignItems: "center",
+    elevation: 3,
   },
-  
+  secondaryButton: {
+    width: "80%",
+    paddingVertical: 15,
+    backgroundColor: "#03DAC6",
+    borderRadius: 8,
+    alignItems: "center",
+    elevation: 3,
+  },
+  buttonText: {
+    fontSize: 18,
+    fontWeight: "bold",
+    color: "#fff",
+  },
+  screenContainer: {
+    flex: 1,
+    width: "100%",
+    alignItems: "center",
+    justifyContent: "center",
+    padding: 20,
+    backgroundColor: "#f5f5f5",
+  },
+  backButton: {
+    marginTop: 20,
+    width: "60%",
+    paddingVertical: 12,
+    backgroundColor: "#FF0266",
+    borderRadius: 8,
+    alignItems: "center",
+    elevation: 3,
+  },
+  backButtonText: {
+    fontSize: 16,
+    fontWeight: "bold",
+    color: "#fff",
+  },
 });
 
 export default App;
